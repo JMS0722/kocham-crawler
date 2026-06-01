@@ -74,13 +74,11 @@ class KochamApp:
         ttk.Entry(path_row, textvariable=self.save_path_var, width=52).pack(side="left", padx=(5, 5))
         ttk.Button(path_row, text="찾아보기", command=self._browse_path).pack(side="right")
 
-        # Filename
+        # Filename preview
         name_row = tk.Frame(file_frame)
         name_row.pack(fill="x")
         ttk.Label(name_row, text="파일명:    ").pack(side="left")
-        self.filename_var = tk.StringVar(value="KOCHAM_Directory")
-        ttk.Entry(name_row, textvariable=self.filename_var, width=35).pack(side="left", padx=(5, 5))
-        ttk.Label(name_row, text="_YYYYMMDD_HHMMSS.xlsx", font=("맑은 고딕", 8), foreground="#999").pack(side="left")
+        ttk.Label(name_row, text="코참디렉토리_{지역}_{일시}.xlsx", font=("맑은 고딕", 9), foreground="#666").pack(side="left")
 
         # --- Delay ---
         delay_frame = ttk.LabelFrame(self.root, text="요청 설정", padding=10)
@@ -208,10 +206,13 @@ class KochamApp:
         return ""
 
     def _build_filepath(self, suffix: str = "") -> str:
-        """파일명 생성. suffix는 중간저장 등에 사용."""
-        prefix = self.filename_var.get().strip()
-        if not prefix:
-            prefix = "KOCHAM_Directory"
+        """파일명 생성. 코참디렉토리_일자_지역"""
+        region = self.region_var.get()
+        if region == "전체" or not region:
+            region_tag = "전체"
+        else:
+            region_tag = region
+        prefix = f"코참디렉토리_{region_tag}"
         filename = generate_filename(prefix=prefix + suffix)
         return os.path.join(self.save_path_var.get(), filename)
 

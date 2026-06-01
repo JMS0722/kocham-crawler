@@ -110,9 +110,7 @@ class EuroChamApp:
         name_row = tk.Frame(file_frame)
         name_row.pack(fill="x")
         ttk.Label(name_row, text="파일명:    ").pack(side="left")
-        self.filename_var = tk.StringVar(value="EuroCham_Directory")
-        ttk.Entry(name_row, textvariable=self.filename_var, width=30).pack(side="left", padx=5)
-        ttk.Label(name_row, text="_YYYYMMDD_HHMMSS.xlsx", font=("맑은 고딕", 8), foreground="#999").pack(side="left")
+        ttk.Label(name_row, text="유로참디렉토리_{알파벳}_{일시}.xlsx", font=("맑은 고딕", 9), foreground="#666").pack(side="left")
 
         # Buttons
         btn_frame = tk.Frame(self.root)
@@ -210,7 +208,12 @@ class EuroChamApp:
         self.root.after(0, _update)
 
     def _build_filepath(self, suffix: str = "") -> str:
-        prefix = self.filename_var.get().strip() or "EuroCham_Directory"
+        letter_sel = self.letter_var.get()
+        if letter_sel == "A-Z (전체)":
+            letter_tag = "전체"
+        else:
+            letter_tag = letter_sel
+        prefix = f"유로참디렉토리_{letter_tag}"
         filename = generate_eurocham_filename(prefix=prefix + suffix)
         return os.path.join(self.save_path_var.get(), filename)
 
