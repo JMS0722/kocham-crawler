@@ -6,6 +6,7 @@ import threading
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 
+from selenium.webdriver.chrome.options import Options
 from src.eurocham_crawler import EuroChamCrawler, LETTERS, DEBUG_PORT
 from src.eurocham_exporter import export_eurocham_excel, generate_eurocham_filename
 
@@ -223,6 +224,9 @@ class EuroChamApp:
                 f"--user-data-dir={PROFILE_DIR}",
                 "--no-first-run",
                 "--no-default-browser-check",
+                "--disable-features=PrivacySandboxSettings4",
+                "--disable-search-engine-choice-screen",
+                "--no-service-autorun",
                 "https://eurochamvn.glueup.com/account/login",
             ])
             self._log("Chrome 실행됨. 로그인해주세요.")

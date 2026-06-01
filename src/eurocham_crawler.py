@@ -175,11 +175,27 @@ class EuroChamCrawler:
         except Exception:
             pass
 
+    def _dismiss_modals(self):
+        """온보딩 모달, 백그라운드 오버레이 등 방해 요소를 제거한다."""
+        try:
+            self.driver.execute_script("""
+                // onboarding modal
+                var modal = document.getElementById('modalContent');
+                if (modal) modal.remove();
+                var bg = document.getElementById('modalBackground');
+                if (bg) bg.remove();
+                // any other blocking overlays
+                document.querySelectorAll('.onboardingModal, #modalBackground').forEach(e => e.remove());
+            """)
+        except Exception:
+            pass
+
     def crawl_letter(self, letter: str) -> list[dict]:
         """한 알파벳의 기업 목록을 크롤링한다."""
         url = f"https://eurochamvn.glueup.com/my/directory/corporate/letter/{letter}/"
         self.driver.get(url)
         time.sleep(self.delay + 2)
+        self._dismiss_modals()
 
         # 기업 카드 수 확인
         cards = self.driver.find_elements(
@@ -203,12 +219,14 @@ class EuroChamCrawler:
                 break
 
             try:
+                self._dismiss_modals()
                 # 버튼이 보이도록 스크롤
                 self.driver.execute_script(
                     "arguments[0].scrollIntoView({block:'center'});", buttons[idx]
                 )
                 time.sleep(0.3)
-                buttons[idx].click()
+                # JS 클릭 (모달 차단 우회)
+                self.driver.execute_script("arguments[0].click();", buttons[idx])
                 time.sleep(self.delay)
 
                 # 오버레이 파싱
