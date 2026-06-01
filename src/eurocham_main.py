@@ -6,6 +6,7 @@ import threading
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 
+from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from src.eurocham_crawler import EuroChamCrawler, LETTERS, DEBUG_PORT
 from src.eurocham_exporter import export_eurocham_excel, generate_eurocham_filename
